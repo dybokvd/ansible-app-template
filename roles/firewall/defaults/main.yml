@@ -1,0 +1,9 @@
+---
+# Must include the SSH port, otherwise you will lock yourself out
+firewall_allowed_ports:
+  - { port: 22, proto: tcp }
+  - { port: 80, proto: tcp }
+  - { port: 443, proto: tcp }
+
+firewall_default_incoming: deny
+firewall_default_outgoing: allow
