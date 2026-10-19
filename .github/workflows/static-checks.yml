@@ -1,0 +1,35 @@
+---
+name: Static checks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: pip install ansible-core ansible-lint
+
+      - name: Install collections
+        run: ansible-galaxy collection install -r requirements.yml
+
+      - name: Run ansible-lint
+        run: ansible-lint
+
+      # Intentionally use an inline inventory instead of a real environment,
+      # so the check doesn't depend on its Vault-encrypted values.
+      # The "Could not match supplied host pattern" warning is expected.
+      - name: Check playbook syntax
+        run: ansible-playbook -i localhost, playbook.yml --syntax-check
