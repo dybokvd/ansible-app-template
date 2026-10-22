@@ -34,3 +34,7 @@ Keep in mind that `firewall_allowed_ports` variable must include your SSH port. 
           - { port: 22, proto: tcp }
           - { port: 8080, proto: tcp }
 ```
+
+## Notes
+
+ufw does not filter traffic to published Docker container ports. When a container is started with a published port, e.g. `-p 8080:80`, Docker adds its own iptables rules that send incoming traffic straight to the container, so it bypasses the ufw rules. The port stays reachable from outside even with `firewall_default_incoming: deny` and without a matching allow rule. `ufw status` does not list it either, which makes the exposure easy to miss.
